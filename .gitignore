@@ -1,0 +1,8 @@
+.pioenvs/
+.piolibdeps/
+.vscode/
+lib/
+test/
+.travis.yml
+linapple.map
+setup.sh
