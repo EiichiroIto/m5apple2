@@ -1,7 +1,7 @@
 # M5Apple2
 M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linapple.sourceforge.net/)を移植して作られています。
 
-# 遊ぶために必要なもの
+## 遊ぶために必要なもの
 * M5Stack FIRE (https://docs.m5stack.com/#/en/core/fire)
 * マイクロSDカード (16GB推奨。32GB以上は読み込めない場合があるようです)
 * Apple ][のディスクイメージ
@@ -9,7 +9,7 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 * (オプション) Grove Thumb Joystick (Analog Joystick)
 * (オプション) M5Stack Official CardKB Mini Keyboard. (キーボード系のゲームでは必須です）
 
-# ビルドのために必要なもの
+## ビルドのために必要なもの
 * Visual Studio Code (https://code.visualstudio.com/)
 * Platform IO (vscode extension)
 * M5Stack Library
@@ -37,14 +37,14 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 * Groveの(アナログ)ジョイスティックに対応しています。
 * ジョイスティックのボタン(A,B)は、M5StackのBボタンとCボタンを使います。
 
-## 加速度センサジョイスティックのキャリブレーション
+### 加速度センサジョイスティックのキャリブレーション
 1. M5Stackを水平なところに置いてください。
 1. Aボタンを押してメニューを表示させます。
 1. "Select Joystick: Accelerometer" を選びます。 (M5Stackを動かさないように)
 1. "Calibrate Joystick" を選びます。 (M5Stackを動かさないように)
 1. ダイアログボックスが消えるまで少し待ちます。
 
-## Analog Joystick Calibration
+### Analog Joystick Calibration
 1. M5Stackを水平なところに置いてください。
 1. Aボタンを押してメニューを表示させます。
 1. "Select Joystick: Analog" を選びます。
@@ -54,7 +54,13 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 ## SD-Updater
 * SD-Updaterに対応しているので、Aボタンを押しながらM5Stackを起動するとSD-Updaterに戻ります。
 
-## ビルド
+# 未サポート
+* サウンド
+* ファイルの保存
+* シリアル通信
+* プリンタ
+
+# ビルド
 1. `git clone https://github.com/EiichiroIto/m5apple2`
 1. Run Visual Studio Code and Open m5stack folder.
 1. Build and Upload.

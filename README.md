@@ -1,7 +1,7 @@
 # M5Apple2
 M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple (http://linapple.sourceforge.net/).
 
-# Prerequisites for Play
+## Prerequisites for Play
 * M5Stack FIRE (https://docs.m5stack.com/#/en/core/fire)
 * Micro SD Card (TF Card)
 * Apple ][ Disk Image
@@ -9,7 +9,7 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 * (Optional) Grove Thumb Joystick (Analog Joystick)
 * (Optional) M5Stack Official CardKB Mini Keyboard.
 
-# Prerequisites for Build
+## Prerequisites for Build
 * Visual Studio Code (https://code.visualstudio.com/)
 * Platform IO (vscode extension)
 * M5Stack Library
@@ -37,14 +37,14 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 * Support for Grove Thumb Joystick.
 * Use Button-B and Button-C on M5Stack for Joystick buttons.
 
-## Accelerometer Joystick Calibration
+### Accelerometer Joystick Calibration
 1. Place M5Stack in a horizontal position.
 1. Push Button-A for Menu.
 1. Select "Select Joystick: Accelerometer".
 1. Select "Calibrate Joystick". (Don't move m5stack)
 1. Wait until dialog box closed.
 
-## Analog Joystick Calibration
+### Analog Joystick Calibration
 1. Place M5Stack in a horizontal position.
 1. Push Button-A for Menu.
 1. Select "Select Joystick: Analog".
@@ -54,7 +54,13 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 ## SD-Updater
 * M5Apple2 uses SD-Updater. Booting M5Stack with Button-A pressed will start SD-Updater.
 
-## Build
+# Unsupported functions
+* Sounds
+* Save files
+* Serial Communication
+* Printers
+
+# Build
 1. `git clone https://github.com/EiichiroIto/m5apple2`
 1. Run Visual Studio Code and Open m5stack folder.
 1. Build and Upload.
