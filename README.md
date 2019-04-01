@@ -5,7 +5,7 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 * M5Stack FIRE (https://docs.m5stack.com/#/en/core/fire)
 * Micro SD Card (TF Card)
 * Apple ][ Disk Image
-* (Optional) M5Stack_LovyanLauncher (https://github.com/lovyan03/M5Stack_LovyanLauncher)
+* (Recommended) M5Stack_LovyanLauncher (https://github.com/lovyan03/M5Stack_LovyanLauncher)
 * (Optional) Grove Thumb Joystick (Analog Joystick)
 * (Optional) M5Stack Official CardKB Mini Keyboard.
 
@@ -56,7 +56,7 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 
 # Unsupported functions
 * Sounds
-* Save files
+* Saving files
 * Serial Communication
 * Printers
 

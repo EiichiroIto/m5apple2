@@ -10,6 +10,25 @@
 
 #define map16(r,g,b) ((((r)>>3)<<11) | (((g)>>2)<<5) | ((b)>>3))
 
+void DisplayFunction(const char *buttonA, const char *buttonB, const char *buttonC)
+{
+#ifdef REAL_M5STACK
+  M5.Lcd.setTextSize(1);
+  M5.Lcd.setTextColor(map16(255,255,255));
+  M5.Lcd.fillRect(50, 220, 60, 19, map16(0,0,0));
+  M5.Lcd.setCursor(50, 220);
+  M5.Lcd.printf(buttonA);
+  M5.Lcd.fillRect(145, 220, 60, 19, map16(0,0,0));
+  M5.Lcd.setCursor(145, 220);
+  M5.Lcd.printf(buttonB);
+  M5.Lcd.fillRect(240, 220, 60, 19, map16(0,0,0));
+  M5.Lcd.setCursor(240, 220);
+  M5.Lcd.println(buttonC);
+#else /* REAL_M5STACK */
+  printf("[%s] [%s] [%s]\n", buttonA, buttonB, buttonC);
+#endif /* REAL_M5STACK */
+}
+
 /*
  * VideoDisplayLogo
  */
@@ -45,25 +64,7 @@ void VideoDisplayLogo()
   printf("M5Apple][\n");
   printf("base on LinApple\n");
 #endif /* REAL_M5STACK */
-}
-
-void DisplayFunction(const char *buttonA, const char *buttonB, const char *buttonC)
-{
-#ifdef REAL_M5STACK
-  M5.Lcd.setTextSize(1);
-  M5.Lcd.setTextColor(map16(255,255,255));
-  M5.Lcd.fillRect(50, 220, 60, 19, map16(0,0,0));
-  M5.Lcd.setCursor(50, 220);
-  M5.Lcd.printf(buttonA);
-  M5.Lcd.fillRect(145, 220, 60, 19, map16(0,0,0));
-  M5.Lcd.setCursor(145, 220);
-  M5.Lcd.printf(buttonB);
-  M5.Lcd.fillRect(240, 220, 60, 19, map16(0,0,0));
-  M5.Lcd.setCursor(240, 220);
-  M5.Lcd.println(buttonC);
-#else /* REAL_M5STACK */
-  printf("[%s] [%s] [%s]\n", buttonA, buttonB, buttonC);
-#endif /* REAL_M5STACK */
+  DisplayFunction("BTN A", "Menu", "BTN B");
 }
 
 void DisplayBackground()
@@ -90,6 +91,7 @@ void DisplayBackground()
   M5.Lcd.setTextColor(0xFFFF);
   M5.Lcd.setTextSize(0);
 #endif /* REAL_M5STACK */
+  DisplayFunction("BTN A", "Menu", "BTN B");
 }
 
 static void DisplayFrame(int x, int y, int w, int h)
@@ -294,7 +296,6 @@ bool ChooseAnImage(int x,int y, char *incoming_dir, int slot, char **filename, b
   if (TopFilesIndex < 0) {
     TopFilesIndex = 0;
   }
-  DisplayFunction(" Up  ", " OK  ", " Down");
   while (true) {
     DisplayFiles(25, 110, 270, 90);
     SDL_Event event;
@@ -471,10 +472,10 @@ int ChooseMainMenu()
 {
   info("ChooseMainMenu");
   CurMainMenuIndex = 0;
-  DisplayFunction(" Up  ", " OK  ", " Down");
   while (true) {
     SetupMainMenu();
     DisplayMainMenu(25, 110, 270, 90);
+    DisplayFunction(" Up  ", " OK  ", " Down");
     SDL_Event event;
     event.type = SDL_QUIT;
     while(event.type != SDL_KEYDOWN) {  // wait for key pressed
@@ -501,17 +502,21 @@ int ChooseMainMenu()
       CurMainMenuIndex = MainMenu.Length() - 1;
       break;
     case SDLK_ESCAPE:
+      DisplayFunction("BTN A", "Menu", "BTN B");
       return false;
     case SDLK_BUTTONB:
     case SDLK_RETURN:
       switch (MainMenu.value(CurMainMenuIndex)) {
       case MM_Cancel:
+        DisplayFunction("BTN A", "Menu", "BTN B");
         return false;
       case MM_Reset:
         DoRun();
+        DisplayFunction("BTN A", "Menu", "BTN B");
         return true;
       case MM_SoftKeyboard:
         DoOnScreenKeyboard();
+        DisplayFunction("BTN A", "Menu", "BTN B");
         return true;
       case MM_Disk1:
         DiskSelect(0);
@@ -533,4 +538,54 @@ int ChooseMainMenu()
       }
     }
   }
+}
+
+#ifdef REAL_M5STACK
+static uint16_t DriveStatusColor(enum Disk_Status_e status)
+{
+  uint16_t color = map16(200, 200, 200);
+  switch (status) {
+	case DISK_STATUS_READ:
+    color = map16(0, 0, 255);
+    break;
+	case DISK_STATUS_WRITE:
+    color = map16(255, 0, 0);
+    break;
+	case DISK_STATUS_PROT:
+    color = map16(255, 255, 0);
+    break;
+  default: /* DISK_STATUS_OFF */
+    break;
+  }
+  return color;
+}
+#endif /* REAL_M5STACK */
+
+/*
+ * DrawStatusArea
+ */
+
+void DrawStatusArea (int drawflags)
+{
+#ifdef REAL_M5STACK
+  extern void DiskGetLightStatus (int *pDisk1Status_, int *pDisk2Status_);
+
+  M5.Lcd.setTextSize(0);
+  DisplayFrame(285, 0, 30, 10);
+  enum Disk_Status_e iDrive1Status = DISK_STATUS_OFF;
+  enum Disk_Status_e iDrive2Status = DISK_STATUS_OFF;
+  DiskGetLightStatus((int*) &iDrive1Status,(int*) &iDrive2Status);
+  uint16_t color;
+  M5.Lcd.setCursor(287, 1);
+  color = DriveStatusColor(iDrive1Status);
+  M5.Lcd.setTextColor(color);
+  M5.Lcd.print("#1");
+  M5.Lcd.setCursor(301, 1);
+  color = DriveStatusColor(iDrive2Status);
+  M5.Lcd.setTextColor(color);
+  M5.Lcd.print("#2");
+  M5.Lcd.setTextColor(map16(255,255,255));
+#else /* REAL_M5STACK */
+  info("DrawStatusArea");
+#endif /* REAL_M5STACK */
 }

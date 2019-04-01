@@ -1,11 +1,11 @@
 # M5Apple2
-M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linapple.sourceforge.net/)を移植して作られています。
+M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linapple.sourceforge.net/ )を移植して作られています。
 
 ## 遊ぶために必要なもの
 * M5Stack FIRE (https://docs.m5stack.com/#/en/core/fire)
 * マイクロSDカード (16GB推奨。32GB以上は読み込めない場合があるようです)
 * Apple ][のディスクイメージ
-* (オプション) M5Stack_LovyanLauncher (https://github.com/lovyan03/M5Stack_LovyanLauncher) (ビルドしないで遊ぶなら必須です)
+* (推奨) M5Stack_LovyanLauncher (https://github.com/lovyan03/M5Stack_LovyanLauncher) (ビルドしないで遊ぶなら必須です)
 * (オプション) Grove Thumb Joystick (Analog Joystick)
 * (オプション) M5Stack Official CardKB Mini Keyboard. (キーボード系のゲームでは必須です）
 

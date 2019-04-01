@@ -202,8 +202,10 @@ SDL_Surface  *g_hLogoBitmap = NULL;
 #endif /* m5stack */
 SDL_Surface  *charset40 = NULL;		// Apple charset40 bitmap
 
+#ifndef m5stack
 SDL_Surface *g_hStatusSurface = NULL;	// status panel
 int g_iStatusCycle = 0;		// cycler for status panel showing
+#endif /* m5stack */
 
 //static HPALETTE      g_hPalette;
 SDL_Surface  *g_origscreen = NULL;
@@ -401,6 +403,7 @@ void CreateDIBSections () {
   hcl = SDL_SetColors(g_origscreen, g_pSourceHeader, 0, 256);
 //    printf("SetColors(g_origscreen)=%d\n",hcl);
  
+#ifndef m5stack
    g_hStatusSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, STATUS_PANEL_W, STATUS_PANEL_H, SCREEN_BPP, 0, 0, 0, 0);
    SDL_SetColors(g_hStatusSurface, screen->format->palette->colors, 0, 256);
 
@@ -415,7 +418,6 @@ void CreateDIBSections () {
 	SDL_FillRect(g_hStatusSurface, &srect, mybluez);	// fill status panel
 	rectangle(g_hStatusSurface, 0, 0, STATUS_PANEL_W - 1, STATUS_PANEL_H - 1, myyell);
 	rectangle(g_hStatusSurface, 2, 2, STATUS_PANEL_W - 5, STATUS_PANEL_H - 5, myyell);
-#ifndef m5stack
 	if(font_sfc == NULL) fonts_initialization();
 	if(font_sfc != NULL) {
 		font_print(7, 6, "FDD1", g_hStatusSurface, 1.3, 1.5); // show signs
@@ -1745,8 +1747,10 @@ void VideoDestroy () {
   if(g_origscreen) SDL_FreeSurface(g_origscreen);
   g_origscreen = NULL;
 
+#ifndef m5stack
   if(g_hStatusSurface) SDL_FreeSurface(g_hStatusSurface);
   g_hStatusSurface = NULL;
+#endif /* m5stack */
 
 //   g_hDeviceDC     = (HDC)0;
 //   g_hDeviceBitmap = (HBITMAP)0;
@@ -2022,6 +2026,7 @@ void VideoRefreshScreen () {
   srect.x = screen->w - STATUS_PANEL_W - 5;
   srect.y = screen->h - STATUS_PANEL_H - 5;
 
+#ifndef m5stack
   int bStatusShow = g_iStatusCycle;
   if(g_iStatusCycle > 0) {
 //		double led_fades[SHOW_CYCLES + 1] = {0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.85,0.88,0.92,0.95,0.94,0.96,0.97,0.98,0.99};
@@ -2030,13 +2035,12 @@ void VideoRefreshScreen () {
 //		surface_fader(g_hStatusSurface, nowleds, nowleds, nowleds, -1, 0);
 
 	  g_iStatusCycle--;
-#ifndef m5stack
 	  if(!g_iStatusCycle) {
 	  		HD_ResetStatus();	// just do not know other way to switch off HD leds
 
 	  }
-#endif /* m5stack */
   }	
+#endif /* m5stack */
   // New simplified code:
   // . Oliver Schmidt gets a flickering mouse cursor with this code
 	  if (/*framedc &&*/ anydirty)
@@ -2048,15 +2052,25 @@ void VideoRefreshScreen () {
 			SDL_SoftStretch(g_hDeviceBitmap,&origRect,g_origscreen,&newRect);
 			SDL_BlitSurface(g_origscreen, NULL, screen, NULL);
 		}
+#ifndef m5stack
 		  if(bStatusShow && g_ShowLeds) SDL_BlitSurface(g_hStatusSurface, NULL, screen, &srect);
+#endif /* m5stack */
 		  SDL_Flip(screen);	// flip SDL buffers
 	//	BitBlt(framedc,0,0,560,384,g_hDeviceDC,0,0,SRCCOPY);
 	//	GdiFlush();
 	  }
+#ifdef m5stack
+	  else {
+	    extern int DrawStatusArea(int);
+
+	    DrawStatusArea(0);
+	  }
+#else /* m5stack */
 	  else if(bStatusShow) {
 		  if(/*bStatusShow*/ g_ShowLeds) SDL_BlitSurface(g_hStatusSurface, NULL, screen, &srect);
 		  SDL_UpdateRect(screen, srect.x, srect.y, STATUS_PANEL_W, STATUS_PANEL_H);
 	  }
+#endif /* m5stack */
 
 //  FrameReleaseVideoDC();
   SetLastDrawnImage();

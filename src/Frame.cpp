@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "stdafx.h"
 #ifdef m5stack
 extern int ChooseMainMenu();
+extern void DisplayBackground();
 #else /* m5stack */
 //#pragma  hdrstop
 #include "MouseInterface.h"
@@ -115,8 +116,8 @@ static BOOL    usingcursor     = 0;
 // static LPDIRECTDRAW        directdraw = (LPDIRECTDRAW)0;
 // static LPDIRECTDRAWSURFACE surface    = (LPDIRECTDRAWSURFACE)0;
 
-#ifndef m5stack
 void    DrawStatusArea (/*HDC passdc,*/ BOOL drawflags);
+#ifndef m5stack
 void    ProcessButtonClick (int button, int mod); // handle control buttons(F1-..F12) events
 #endif /* m5stack */
 
@@ -327,21 +328,17 @@ void DrawFrameWindow () {
   VideoRealizePalette(/*dc*/);
 //  printf("In DrawFrameWindow. g_nAppMode == %d\n", g_nAppMode);
 
-#ifndef m5stack
   // DRAW THE STATUS AREA
   DrawStatusArea(DRAW_BACKGROUND | DRAW_LEDS);
-#endif /* m5stack */
 
   // DRAW THE CONTENTS OF THE EMULATED SCREEN
 #ifdef m5stack
   if (g_nAppMode == MODE_LOGO) {
     VideoDisplayLogo(); // logo
-    DisplayFunction("Menu", "BTN A", "BTN B");
   } else if (g_nAppMode == MODE_DEBUG) {
     DebugDisplay(1);  //debugger
   } else {
     DisplayBackground();
-    DisplayFunction("Menu", "BTN A", "BTN B");
     VideoRedrawScreen(); // normal state - running emulator?
   }
 #else /* m5stack */
@@ -359,8 +356,6 @@ void DrawFrameWindow () {
 //===========================================================================
 void DrawStatusArea (/*HDC passdc,*/ int drawflags)
 {
-  return;
-
   // status area not used now (yet?) --bb
 /*	FrameReleaseDC();
 	HDC  dc     = (passdc ? passdc : GetDC(g_hFrameWindow));
@@ -654,7 +649,7 @@ void	FrameDispatchMessage(SDL_Event * e) // process given SDL event
     case SDL_KEYDOWN:
 //	    printf("keyb %d is down!\n", mysym);
 #ifdef m5stack
-      if (mysym == SDLK_BUTTONA) {
+      if (mysym == SDLK_BUTTONB) {
 	ChooseMainMenu();
 	break;
       }
@@ -984,8 +979,8 @@ void DoRun()
     DebugEnd();
   }
   g_nAppMode = MODE_RUNNING;
+  DrawStatusArea(DRAW_TITLE);
   DisplayBackground();
-  DisplayFunction("Menu", "BTN A", "BTN B");
   VideoRedrawScreen();
   g_bResetTiming = true;
 }
@@ -1324,9 +1319,7 @@ HDC FrameGetVideoDC (LPBYTE *addr, LONG *pitch) {
 
 //===========================================================================
 void FrameRefreshStatus (int drawflags) {
-#ifndef m5stack
   DrawStatusArea(/*(HDC)0,*/drawflags);
-#endif /* m5stack */
 }
 
 // //===========================================================================

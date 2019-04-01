@@ -23,7 +23,6 @@ void AccJoystick::Setup(TwoWire &w)
     mpu = new MPU6050(w);
     mpu->begin();
   }
-  mpu->calcGyroOffsets(false);
 }
 
 void AccJoystick::Update()
@@ -85,10 +84,12 @@ int AccJoystick::GetY() const
 
 void AccJoystick::CalibrateCenter(int msec)
 {
-  unsigned long end = millis() + msec;
+  unsigned long end;
   float sumX = 0, sumY = 0;
   int count = 0;
 
+  mpu->calcGyroOffsets(false);
+  end = millis() + msec;
   while (millis() < end) {
     sumX += mpu->getAccX();
     sumY += mpu->getAccY();

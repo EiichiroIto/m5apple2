@@ -366,7 +366,7 @@ void PushButtonEvents()
   M5.BtnA.read();
   M5.BtnB.read();
   M5.BtnC.read();
-  JoySetButton(BUTTON0, (eBUTTONSTATE) M5.BtnB.isPressed());
+  JoySetButton(BUTTON0, (eBUTTONSTATE) M5.BtnA.isPressed());
   JoySetButton(BUTTON1, (eBUTTONSTATE) M5.BtnC.isPressed());
   if (M5.BtnA.wasPressed()) {
     SDL_Event e;
