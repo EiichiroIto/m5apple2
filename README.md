@@ -16,7 +16,7 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 
 ## Play
 1. Turn m5stack power on then automatically start.
-1. Push Button-A for Menu.
+1. Push Button-B for Menu.
 1. Select "Insert Disk #1" and Select a Disk Image.
 1. Select "Reset" for booting Apple ][ emulator.
 
@@ -27,18 +27,18 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 ## Joystick
 * Support for on-board Accelerometer Joystick Emulation.
 * Support for Grove Thumb Joystick.
-* Use Button-B and Button-C on M5Stack for Joystick buttons.
+* Use Button-A and Button-C on M5Stack for Joystick buttons.
 
 ### Accelerometer Joystick Calibration
 1. Place M5Stack in a horizontal position.
-1. Push Button-A for Menu.
+1. Push Button-B for Menu.
 1. Select "Select Joystick: Accelerometer".
 1. Select "Calibrate Joystick". (Don't move m5stack)
 1. Wait until dialog box closed.
 
 ### Analog Joystick Calibration
 1. Place M5Stack in a horizontal position.
-1. Push Button-A for Menu.
+1. Push Button-B for Menu.
 1. Select "Select Joystick: Analog".
 1. Select "Calibrate Joystick". (Don't move thumb stick)
 1. After "Move stick vertically and holizontally." message, move thumb stick vertically and holizontally several times.

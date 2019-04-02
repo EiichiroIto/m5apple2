@@ -16,7 +16,7 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 
 ## 遊ぶ
 1. M5Stackの電源を入れると自動的にM5Apple2が起動します。
-1. Aボタンを押してメニューを表示させます。
+1. Bボタンを押してメニューを表示させます。
 1. "Insert Disk #1"を選んでBボタンを押し、適当なディスクイメージを選びます。
 1. "Reset"を選んでエミュレータを起動します。
 
@@ -27,18 +27,18 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 ## ジョイスティック
 * Fireに搭載されている加速度センサを使った、ジョイスティックエミュレーションに対応しています。
 * Groveの(アナログ)ジョイスティックに対応しています。
-* ジョイスティックのボタン(A,B)は、M5StackのBボタンとCボタンを使います。
+* ジョイスティックのボタン(A,B)は、M5StackのAボタンとCボタンを使います。
 
 ### 加速度センサジョイスティックのキャリブレーション
 1. M5Stackを水平なところに置いてください。
-1. Aボタンを押してメニューを表示させます。
+1. Bボタンを押してメニューを表示させます。
 1. "Select Joystick: Accelerometer" を選びます。 (M5Stackを動かさないように)
 1. "Calibrate Joystick" を選びます。 (M5Stackを動かさないように)
 1. ダイアログボックスが消えるまで少し待ちます。
 
 ### Analog Joystick Calibration
 1. M5Stackを水平なところに置いてください。
-1. Aボタンを押してメニューを表示させます。
+1. Bボタンを押してメニューを表示させます。
 1. "Select Joystick: Analog" を選びます。
 1. "Calibrate Joystick" を選びます。
 1. "Move stick vertically and holizontally."というメッセージがでたら、スティックを上下左右に何度か動かしてください。
