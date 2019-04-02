@@ -9,14 +9,6 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 * (Optional) Grove Thumb Joystick (Analog Joystick)
 * (Optional) M5Stack Official CardKB Mini Keyboard.
 
-## Prerequisites for Build
-* Visual Studio Code (https://code.visualstudio.com/)
-* Platform IO (vscode extension)
-* M5Stack Library
-* M5Stack SD-Updater (https://github.com/tobozo/M5Stack-SD-Updater)
-* M5Stack OnScreenKeyboard (https://github.com/lovyan03/M5Stack_OnScreenKeyboard)
-* MPU6050_tockn (https://github.com/Tockn/MPU6050_tockn)
-
 ## Preparation for Play
 * Build and upload M5Apple2, or install LovyanLauncher and copy a program in "bin" folder.
 * Copy some Apple ][ Disk Image(s) to "/m5apple2" folder on Micro SD Card.
@@ -59,9 +51,4 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 * Saving files
 * Serial Communication
 * Printers
-
-# Build
-1. `git clone https://github.com/EiichiroIto/m5apple2`
-1. Run Visual Studio Code and Open m5stack folder.
-1. Build and Upload.
 

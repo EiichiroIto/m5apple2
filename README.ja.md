@@ -9,14 +9,6 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 * (オプション) Grove Thumb Joystick (Analog Joystick)
 * (オプション) M5Stack Official CardKB Mini Keyboard. (キーボード系のゲームでは必須です）
 
-## ビルドのために必要なもの
-* Visual Studio Code (https://code.visualstudio.com/)
-* Platform IO (vscode extension)
-* M5Stack Library
-* M5Stack SD-Updater (https://github.com/tobozo/M5Stack-SD-Updater)
-* M5Stack OnScreenKeyboard (https://github.com/lovyan03/M5Stack_OnScreenKeyboard)
-* MPU6050_tockn (https://github.com/Tockn/MPU6050_tockn)
-
 ## 遊ぶための準備
 * M5Apple2をビルドしてM5Stackにファームウェアを転送するか、M5StackにLovyanLauncherをインストールして、このパッケージ内の "bin" フォルダ以下にあるプログラムをコピーします。
 * Apple ][のディスクイメージを、マイクロSDカードの "/m5apple2" フォルダにコピーします。
@@ -59,9 +51,4 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 * ファイルの保存
 * シリアル通信
 * プリンタ
-
-# ビルド
-1. `git clone https://github.com/EiichiroIto/m5apple2`
-1. Run Visual Studio Code and Open m5stack folder.
-1. Build and Upload.
 
