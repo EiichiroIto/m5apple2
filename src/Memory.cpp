@@ -34,9 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "MouseInterface.h"
 #endif /* m5stack */
 #include "resource.h"
-#ifndef m5stack
 #include "wwrapper.h"
-#endif /* m5stack */
 #include <assert.h>
 
 // for mlock - munlock

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 #define m5stack
-#include "wincompat.h"
+#include "wwrapper.h"
 #include "sdlcompat.h"
 #include "Common.h"
 
@@ -18,8 +18,6 @@ int main(int argc, char * lpCmdLine[])
 #define r16(col) ((col >> 10) & 0x1f)
 #define g16(col) ((col >> 5)  & 0x1f)
 #define b16(col) (col & 0x1f)
-
-LPVOID VirtualAlloc(LPVOID lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect);
 
 // rrrrrggggggbbbbb
 #define map16(r,g,b) ((((r)>>3)<<11) | (((g)>>2)<<5) | ((b)>>3))
@@ -295,7 +293,7 @@ static void setupEvents()
   SDL_Event e;
 
   e.type = SDL_KEYDOWN;
-  e.key.keysym.sym = SDLK_BUTTONA;
+  e.key.keysym.sym = SDLK_BUTTONB;
   SDL_PushEvent(&e);
 
   e.type = SDL_KEYDOWN;
@@ -312,6 +310,10 @@ static void setupEvents()
 
   e.type = SDL_KEYDOWN;
   e.key.keysym.sym = SDLK_RETURN;
+  SDL_PushEvent(&e);
+
+  e.type = SDL_KEYDOWN;
+  e.key.keysym.sym = SDLK_BUTTONC;
   SDL_PushEvent(&e);
 
   e.type = SDL_KEYDOWN;
@@ -574,60 +576,12 @@ void SDL_GetClipRect(SDL_Surface *surface, SDL_Rect *rect)
   rect->h = surface->h;
 }
 
-LPVOID VirtualAlloc(LPVOID lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect)
-{
-  static int total = 0;
-  total += dwSize;
-  printf("VirtualAlloc: %d (%d)\n", dwSize, total);
-  void* mymemory = malloc(dwSize);
-  if (flAllocationType & 0x1000) {
-    ZeroMemory(mymemory, dwSize);
-  }
-  return mymemory;
-}
-
-BOOL VirtualFree(LPVOID lpAddress, size_t dwSize, DWORD dwFreeType)
-{
-  info("VirtualFree");
-  free(lpAddress);
-}
-
-DWORD CharLowerBuff(LPTSTR lpsz, DWORD cchLength)
-{
-  error("CharLowerBuff");
-}
-
 double DSUploadBuffer(short* buffer, unsigned len)
 {
   info("DSUploadBuffer");
 }
 
 bool g_bDSAvailable = false;
-
-bool ReadImageFile(const char *filename, unsigned char **pBuffer, int *pSize, char **pExt)
-{
-  const char *ext = strchr(filename, '.');
-  if (ext == NULL) {
-    error("invalid extension");
-  }
-  FILE *fp = fopen(filename, "rb");
-  if (fp == NULL) {
-    return false;
-  }
-  fseek(fp, 0, SEEK_END);
-  int size = ftell(fp);
-  fseek(fp, 0, SEEK_SET);
-  unsigned char *buffer = (unsigned char *) VirtualAlloc(NULL, size, MEM_COMMIT,PAGE_READWRITE);
-  int ret = fread(buffer, 1, size, fp);
-  fclose(fp);
-  if (ret != size) {
-    error("ReadImageFile: invalid fread");
-  }
-  *pBuffer = buffer;
-  *pSize = size;
-  *pExt = (char *) ext;
-  return true;
-}
 
 void DoOnScreenKeyboard()
 {

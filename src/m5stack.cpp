@@ -40,11 +40,9 @@ void loop()
 }
 
 #define m5stack
-#include "wincompat.h"
+#include "wwrapper.h"
 #include "sdlcompat.h"
 #include "Common.h"
-
-LPVOID VirtualAlloc(LPVOID lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect);
 
 // rrrrrggggggbbbbb
 #define map16(r,g,b) ((((r)>>3)<<11) | (((g)>>2)<<5) | ((b)>>3))
@@ -571,13 +569,13 @@ void SDL_UpdateRect(SDL_Surface *surface, int x0, int y0, int w, int h)
   }
 }
 
-#include "AnalogJoystick.h"
-#include "AccJoystick.h"
+#include "m5joystick.h"
 
 SDL_Joystick joystick1;
 enum M5Joystick g_Joystick = Joystick_None;
-AnalogJoystick analogJoystick;
-AccJoystick accJoystick;
+AnalogJoystick analogJoystick(3);
+AccJoystick accJoystick(3);
+I2CJoystick i2cJoystick(1);
 char vhKeys[] = "IJKL";
 
 #define VHKEYS_UP ((int) vhKeys[0])
@@ -598,6 +596,8 @@ SDL_Joystick *SDL_JoystickOpen(int p1)
     analogJoystick.Setup(PortB_pinA, PortB_pinB);
   } else if (g_Joystick == Joystick_Acc) {
     accJoystick.Setup(Wire);
+  } else if (g_Joystick == Joystick_I2C) {
+    i2cJoystick.Setup(Wire);
   }
   return &joystick1;
 }
@@ -655,6 +655,9 @@ int SDL_JoystickGetAxis(SDL_Joystick *joystick, int axis)
   } else if (g_Joystick == Joystick_Acc) {
     accJoystick.Update();
     v = axis == 0 ? accJoystick.GetX() : accJoystick.GetY();
+  } else if (g_Joystick == Joystick_I2C) {
+    i2cJoystick.Update();
+    v = axis == 0 ? i2cJoystick.GetX() : i2cJoystick.GetY();
   }
   updateKeyStateFromJoystick(axis, v);
   return v;
@@ -672,6 +675,12 @@ void DoCalibrateJoystick(int sx, int sy)
   } else if (g_Joystick == Joystick_Acc) {
     M5.Lcd.println("Calibrating Accelerometer...");
     accJoystick.CalibrateCenter(500);
+  } else if (g_Joystick == Joystick_I2C) {
+    M5.Lcd.println("Calibrating I2C Joystick...");
+    i2cJoystick.CalibrateCenter(500);
+    M5.Lcd.setCursor(sx, sy += 10);
+    M5.Lcd.println("Move stick vertically and holizontally.");
+    i2cJoystick.CalibrateMinMax(5000);
   }
   M5.Lcd.setCursor(sx, sy+10);
   M5.Lcd.println("Done.");
@@ -752,58 +761,11 @@ void SDL_GetClipRect(SDL_Surface *surface, SDL_Rect *rect)
   rect->h = surface->h;
 }
 
-LPVOID VirtualAlloc(LPVOID lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect)
-{
-  static int total = 0;
-  total += dwSize;
-  int free = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
-  //M5.Lcd.printf("VirtualAlloc: size=%d, total=%d, free=%d\n", dwSize, total, free);
-  void* mymemory = ps_malloc(dwSize);
-  if (flAllocationType & 0x1000) {
-    ZeroMemory(mymemory, dwSize);
-  }
-  return mymemory;
-}
-
-BOOL VirtualFree(LPVOID lpAddress, size_t dwSize, DWORD dwFreeType)
-{
-  info("VirtualFree");
-  heap_caps_free(lpAddress);
-}
-
-DWORD CharLowerBuff(LPTSTR lpsz, DWORD cchLength)
-{
-  error("CharLowerBuff");
-}
-
 double DSUploadBuffer(short* buffer, unsigned len)
 {
   info("DSUploadBuffer");
 }
 
 bool g_bDSAvailable = false;
-
-bool ReadImageFile(const char *filename, unsigned char **pBuffer, int *pSize, char **pExt)
-{
-  const char *ext = strchr(filename, '.');
-  if (ext == NULL) {
-    error("invalid extension");
-  }
-  File f = SD.open(filename);
-  int size = f.size();
-  if (size == 0) {
-    return false;
-  }
-  unsigned char *buffer = (unsigned char *) VirtualAlloc(NULL, size, MEM_COMMIT,PAGE_READWRITE);
-  int ret = f.readBytes((char *) buffer, size);
-  f.close();
-  if (ret != size) {
-    error("ReadImageFile: invalid readBytes");
-  }
-  *pBuffer = buffer;
-  *pSize = size;
-  *pExt = (char *) ext;
-  return true;
-}
 
 #endif /* REAL_M5STACK */

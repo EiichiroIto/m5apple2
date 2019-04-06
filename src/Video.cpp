@@ -29,9 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* Adaptation for SDL and POSIX (l) by beom beotiger, Nov-Dec 2007 */
 
 #include "stdafx.h"
-#ifndef m5stack
 #include "wwrapper.h"
-#endif /* m5stack */
 //#include "stretch.c"	// for SDL_SoftStretch thanx to Sam Lantinga and Tomasz Cejner
 
 //#include "..\resource\resource.h"

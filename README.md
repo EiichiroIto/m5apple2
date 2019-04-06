@@ -27,28 +27,39 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 ## Joystick
 * Support for on-board Accelerometer Joystick Emulation.
 * Support for Grove Thumb Joystick.
+* Support for M5Stack I2C Joystick.
 * Use Button-A and Button-C on M5Stack for Joystick buttons.
 
-### Accelerometer Joystick Calibration
-1. Place M5Stack in a horizontal position.
+### Accelerometer Joystick Selection & Calibration
+1. Place M5Stack face's up on a horizontal position like a table.
 1. Push Button-B for Menu.
 1. Select "Select Joystick: Accelerometer".
 1. Select "Calibrate Joystick". (Don't move m5stack)
 1. Wait until dialog box closed.
 
-### Analog Joystick Calibration
-1. Place M5Stack in a horizontal position.
+### Analog Joystick Selection & Calibration
+1. Place M5Stack face's up on a horizontal position like a table.
 1. Push Button-B for Menu.
 1. Select "Select Joystick: Analog".
 1. Select "Calibrate Joystick". (Don't move thumb stick)
 1. After "Move stick vertically and holizontally." message, move thumb stick vertically and holizontally several times.
 
-## SD-Updater
+### I2C Joystick Selection & Calibration
+1. Place M5Stack face's up on a horizontal position like a table.
+1. Push Button-B for Menu.
+1. Select "Select Joystick: I2C".
+1. Select "Calibrate Joystick". (Don't move thumb stick)
+1. After "Move stick vertically and holizontally." message, move thumb stick vertically and holizontally several times.
+
+# Licence
+GNU GENERAL PUBLIC LICENSE Version 3
+
+# Supported functions
 * M5Apple2 uses SD-Updater. Booting M5Stack with Button-A pressed will start SD-Updater.
+* Supports saving file(s). It writes file(s) on SD Card directly.
 
 # Unsupported functions
 * Sounds
-* Saving files
 * Serial Communication
 * Printers
 

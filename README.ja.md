@@ -27,28 +27,39 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 ## ジョイスティック
 * Fireに搭載されている加速度センサを使った、ジョイスティックエミュレーションに対応しています。
 * Groveの(アナログ)ジョイスティックに対応しています。
+* M5Stack 公式のI2Cジョイスティックに対応しています。
 * ジョイスティックのボタン(A,B)は、M5StackのAボタンとCボタンを使います。
 
-### 加速度センサジョイスティックのキャリブレーション
-1. M5Stackを水平なところに置いてください。
+### 加速度センサジョイスティックの選択とキャリブレーション
+1. M5Stackの液晶面を上にして水平なところに置いてください。
 1. Bボタンを押してメニューを表示させます。
 1. "Select Joystick: Accelerometer" を選びます。 (M5Stackを動かさないように)
 1. "Calibrate Joystick" を選びます。 (M5Stackを動かさないように)
 1. ダイアログボックスが消えるまで少し待ちます。
 
-### Analog Joystick Calibration
-1. M5Stackを水平なところに置いてください。
+### アナログジョイスティックの選択とキャリブレーション
+1. M5Stackの液晶面を上にして水平なところに置いてください。
 1. Bボタンを押してメニューを表示させます。
 1. "Select Joystick: Analog" を選びます。
 1. "Calibrate Joystick" を選びます。
 1. "Move stick vertically and holizontally."というメッセージがでたら、スティックを上下左右に何度か動かしてください。
 
-## SD-Updater
+### I2Cジョイスティックの選択とキャリブレーション
+1. M5Stackの液晶面を上にして水平なところに置いてください。
+1. Bボタンを押してメニューを表示させます。
+1. "Select Joystick: I2C" を選びます。
+1. "Calibrate Joystick" を選びます。
+1. "Move stick vertically and holizontally."というメッセージがでたら、スティックを上下左右に何度か動かしてください。
+
+# ライセンス
+GNU GENERAL PUBLIC LICENSE Version 3
+
+# サポート
 * SD-Updaterに対応しているので、Aボタンを押しながらM5Stackを起動するとSD-Updaterに戻ります。
+* ファイル保存に対応しました。SDカード上のファイルを書き換えるので気をつけてください。
 
 # 未サポート
 * サウンド
-* ファイルの保存
 * シリアル通信
 * プリンタ
 

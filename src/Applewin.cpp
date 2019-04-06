@@ -421,7 +421,7 @@ void LoadConfiguration ()
 
   joytype[0] = 0; // disabled
   joytype[1] = 0; // disabled
-  soundtype = 1; // nothing
+  soundtype = SOUND_WAVE; // nothing
 
   //sg_SSC.SetSerialPort(0); //disabled
 

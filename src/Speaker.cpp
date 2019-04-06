@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "stdafx.h"
 // for _ASSERT ion. (here _ASSERT means Unix(tm) assert) --bb
 #include <assert.h>
+#ifdef m5stack
+#include "wwrapper.h"
+#endif /* m5stack */
 
 // Notes:
 //
@@ -146,9 +149,15 @@ void SpkrDestroy ()
 	Spkr_DSUninit();
 	if(soundtype == SOUND_WAVE)
 	{
+#ifdef m5stack
+	  VirtualFree(g_pSpeakerBuffer, 0, MEM_RELEASE);
+	  VirtualFree(g_pStereoBuffer, 0, MEM_RELEASE);
+	  VirtualFree(g_pRemainderBuffer, 0, MEM_RELEASE);
+#else /* m5stack */
 		delete [] g_pSpeakerBuffer;
 		delete [] g_pStereoBuffer;
 		delete [] g_pRemainderBuffer;
+#endif /* m5stack */
 
 		g_pSpeakerBuffer   = NULL;
 		g_pStereoBuffer    = NULL;

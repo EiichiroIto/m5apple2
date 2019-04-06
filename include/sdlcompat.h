@@ -242,13 +242,8 @@ extern "C" {
   void zip_fclose(struct zip_file *p1);
   void mlock(void *p1, int p2);
   void munlock(void *p1, int p2);
-  LPVOID VirtualAlloc(LPVOID lpAddress, size_t dwSize, DWORD flAllocationType, DWORD flProtect);
-  BOOL VirtualFree(LPVOID lpAddress, size_t dwSize, DWORD dwFreeType);
-  DWORD CharLowerBuff(LPTSTR lpsz, DWORD cchLength);
   double DSUploadBuffer(short* buffer, unsigned len);
   bool ReadImageFile(const char *filename, unsigned char **pBuffer, int *pSize, char **pExt);
 };
-
-#define IsCharLower(ch) ('a' <= (ch) && (ch) <= 'z')
 
 extern bool g_bDSAvailable;

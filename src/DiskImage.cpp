@@ -29,9 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* Adaptation for SDL and POSIX (l) by beom beotiger, Nov-Dec 2007 */
 
 #include "stdafx.h"
-#ifndef m5stack
 #include "wwrapper.h"
-#endif /* m5stack */
 //#pragma  hdrstop
 
 /* DO logical order  0 1 2 3 4 5 6 7 8 9 A B C D E F */
@@ -42,19 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #ifdef m5stack
 struct ImageInfoRec {
-    char      filename[MAX_PATH];
-    DWORD      format;
-    HANDLE     file;
-    DWORD      offset;
-    BOOL       writeprotected;
-    DWORD      headersize;
-    LPBYTE     header;
-    BOOL       validtrack[TRACKS];
-};
-
-typedef ImageInfoRec *imageinfoptr;
 #else /* m5stack */
 typedef struct _imageinforec {
+#endif /* m5stack */
     TCHAR      filename[MAX_PATH];
     DWORD      format;
     HANDLE     file;
@@ -63,6 +51,11 @@ typedef struct _imageinforec {
     DWORD      headersize;
     LPBYTE     header;
     BOOL       validtrack[TRACKS];
+#ifdef m5stack
+};
+typedef ImageInfoRec *imageinfoptr;
+static const char *g_CurrentFilename = NULL;
+#else /* m5stack */
 } imageinforec, *imageinfoptr;
 #endif /* m5stack */
 
@@ -100,8 +93,7 @@ typedef struct _imagetyperec {
     writetype  write;
 } imagetyperec, *imagetypeptr;
 
-static imagetyperec imagetype[IMAGETYPES] = {
-                                      {TEXT(".prg"),
+static imagetyperec imagetype[IMAGETYPES] = {{TEXT(".prg"),
                                        TEXT(".do;.dsk;.iie;.nib;.po"),
                                        PrgDetect,
                                        PrgBoot,
@@ -142,8 +134,7 @@ static imagetyperec imagetype[IMAGETYPES] = {
                                        IieDetect,
                                        NULL,
                                        IieRead,
-                                       IieWrite}
-};
+                                       IieWrite}};
 
 static BYTE diskbyte[0x40] = {0x96,0x97,0x9A,0x9B,0x9D,0x9E,0x9F,0xA6,
                        0xA7,0xAB,0xAC,0xAD,0xAE,0xAF,0xB2,0xB3,
@@ -488,7 +479,7 @@ DWORD DoDetect (LPBYTE imageptr, DWORD imagesize) {
 void DoRead (imageinfoptr ptr, int track, int quartertrack, LPBYTE trackimagebuffer, int *nibbles) {
 #ifdef m5stack
   info("DoRead");
-  void *src = ptr->file + ptr->offset+(track << 12);
+  const void *src = ptr->file + ptr->offset+(track << 12);
   ZeroMemory(workbuffer,4096);
   memcpy(workbuffer, src, 4096);
 #else /* m5stack */
@@ -506,6 +497,16 @@ void DoRead (imageinfoptr ptr, int track, int quartertrack, LPBYTE trackimagebuf
 void DoWrite (imageinfoptr ptr, int track, int quartertrack, LPBYTE trackimage, int nibbles) {
 #ifdef m5stack
   info("DoWrite");
+  ZeroMemory(workbuffer, 4096);
+  DenibblizeTrack(trackimage, 1, nibbles);
+  void *dst = ptr->file + ptr->offset+(track << 12);
+  memcpy(dst, workbuffer, 4096);
+  if (!g_CurrentFilename) {
+    error("DoWrite: invalid filename");
+  }
+  if (!M5WriteFile(g_CurrentFilename, ptr->offset+(track << 12), workbuffer, 4096)) {
+    error("DoWrite: M5WriteFile");
+  }
 #else /* m5stack */
   ZeroMemory(workbuffer,4096);
   DenibblizeTrack(trackimage,1,nibbles);
@@ -814,27 +815,33 @@ int ImageOpen (LPCTSTR  imagefilename,
   printf("ImageOpen: imagefilename=%s, writeproteced=%d, bCreateIfNecessary=%d\n", imagefilename, *pWriteProtected_, bCreateIfNecessary);
 
   LPBYTE pImage;
-  int size;
-  char *ext;
+  DWORD size;
   const DWORD UNKNOWN_FORMAT = 0xFFFFFFFF;
   DWORD format = UNKNOWN_FORMAT;
   DWORD possibleformat = UNKNOWN_FORMAT;
   int loop = 0;
+  HANDLE handle;
 
-  if (!ReadImageFile(imagefilename, &pImage, &size, &ext)) {
+  const char *ext = strchr(imagefilename, '.');
+  if (ext == NULL) {
+    error("ImageOpen: invalid extension");
+  }
+  if (!M5OpenFile(imagefilename, &handle, &size, &pImage)) {
     error("ImageOpen: invalid file");
   }
+  g_CurrentFilename = imagefilename;
+  CloseHandle(handle);
   while ((loop < IMAGETYPES) && (format == UNKNOWN_FORMAT)) {
     if (*ext && strstr(imagetype[loop].rejectexts, ext)) {
       ++loop;
     } else {
       DWORD result = imagetype[loop].detect(pImage, size);
       if (result == 2) {
-	format = loop;
+        format = loop;
       } else if ((result == 1) && (possibleformat == UNKNOWN_FORMAT)) {
-	possibleformat = loop++;
+        possibleformat = loop++;
       } else {
-	++loop;
+        ++loop;
       }
     }
   }

@@ -31,8 +31,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* AND March 2012 AD */
 
 #include "stdafx.h"
-#ifndef m5stack
 #include "wwrapper.h"
+#ifndef m5stack
 #include "ftpparse.h"
 #include "DiskFTP.h"
 

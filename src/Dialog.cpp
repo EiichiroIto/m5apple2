@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #endif /* REAL_M5STACK */
-#include "wincompat.h"
+#include "wwrapper.h"
 #include "sdlcompat.h"
 
 #define map16(r,g,b) ((((r)>>3)<<11) | (((g)>>2)<<5) | ((b)>>3))
@@ -401,6 +401,9 @@ static void SetupMainMenu()
   case Joystick_Acc:
     p = "Select Joystick: Accelerometer";
     break;
+  case Joystick_I2C:
+    p = "Select Joystick: I2C";
+    break;
   default:
     p = "Select Joystick: None";
     break;
@@ -432,6 +435,10 @@ static void NextJoystickType()
     joytype[0] = 1;
     break;
   case Joystick_Acc:
+    g_Joystick = Joystick_I2C;
+    joytype[0] = 1;
+    break;
+  case Joystick_I2C:
     g_Joystick = Joystick_None;
     joytype[0] = 0;
     break;
