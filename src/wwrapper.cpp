@@ -6,9 +6,7 @@
 #include "wwrapper.h"
 
 #ifdef REAL_M5STACK
-#include <M5Stack.h>
-#include <M5StackUpdater.h>
-#include <SD.h>
+#include <M5Core2.h>
 #endif /* REAL_M5STACK */
 
 extern "C" {
@@ -19,12 +17,17 @@ extern "C" {
 bool M5OpenFile(const char *imagefilename, HANDLE *lpHandle, LPDWORD lpSize, LPBYTE *lpImage)
 {
 #ifdef REAL_M5STACK
-  File f = SD.open(imagefilename);
+  String path = "/m5apple2/";
+  path += imagefilename;
+  File f = SD.open(path.c_str());
   int size = f.size();
   if (size == 0) {
     return false;
   }
   LPBYTE pImage = (LPBYTE) VirtualAlloc(NULL, size, MEM_COMMIT,PAGE_READWRITE);
+  if (pImage == 0) {
+    return false;
+  }
   int ret = f.readBytes((char *) pImage, size);
   if (ret != size) {
     VirtualFree(pImage, 0, MEM_RELEASE);
@@ -57,10 +60,9 @@ bool M5OpenFile(const char *imagefilename, HANDLE *lpHandle, LPDWORD lpSize, LPB
 bool M5WriteFile(const char *imagefilename, DWORD pos, const LPBYTE src, DWORD size)
 {
 #ifdef REAL_M5STACK
-  File f = SD.open(imagefilename, "r+");
-  if (f.size() == 0) {
-    return false;
-  }
+  String path = "/m5apple2/";
+  path += imagefilename;
+  File f = SD.open(path.c_str(), "r+");
   if (!f.seek(pos)) {
     f.close();
     return false;

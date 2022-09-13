@@ -1,5 +1,5 @@
 #ifdef REAL_M5STACK
-#include "M5Stack.h"
+#include "M5Core2.h"
 #else /* REAL_M5STACK */
 #include <stdio.h>
 #include <stdlib.h>
@@ -352,7 +352,6 @@ bool ChooseAnImage(int x,int y, char *incoming_dir, int slot, char **filename, b
 #include "Joystick.h"
 
 extern void DoRun();
-extern void DoOnScreenKeyboard();
 extern void DoCalibrateJoystick(int sx, int sy);
 
 /*
@@ -369,7 +368,7 @@ StringList MainMenu;
 int CurMainMenuIndex = 0;
 
 enum {
-  MM_Cancel, MM_Reset, MM_SoftKeyboard, MM_Disk1, MM_Disk2, MM_AppleType, MM_JoystickType, MM_CalibrateJoystick
+  MM_Cancel, MM_Reset, MM_Disk1, MM_Disk2, MM_AppleType, MM_JoystickType, MM_CalibrateJoystick
 };
 
 static void SetupMainMenu()
@@ -379,7 +378,6 @@ static void SetupMainMenu()
   MainMenu.Setup(1024, 100);
   MainMenu.Add("<Cancel>", MM_Cancel);
   MainMenu.Add("Reset", MM_Reset);
-  MainMenu.Add("Soft Keyboard", MM_SoftKeyboard);
   MainMenu.Add("Insert Disk #1", MM_Disk1);
   MainMenu.Add("Insert Disk #2", MM_Disk2);
   switch (g_Apple2Type) {
@@ -519,10 +517,6 @@ int ChooseMainMenu()
         return false;
       case MM_Reset:
         DoRun();
-        DisplayFunction("BTN A", "Menu", "BTN B");
-        return true;
-      case MM_SoftKeyboard:
-        DoOnScreenKeyboard();
         DisplayFunction("BTN A", "Menu", "BTN B");
         return true;
       case MM_Disk1:

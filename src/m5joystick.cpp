@@ -1,5 +1,5 @@
 #ifdef REAL_M5STACK
-#include <M5Stack.h>
+#include "M5Core2.h"
 #include "m5joystick.h"
 
 /*
@@ -128,6 +128,7 @@ bool Joystick::CalibrateMinMax(int msec)
   return minX != centerX && maxX != centerX && minY != centerY && maxY != centerY;
 }
 
+#ifdef USE_AccJoystick
 /*
  * Accelerometer Joystick
  */
@@ -185,6 +186,7 @@ void AccJoystick::Print() const
   M5.Lcd.printf("y: %d, %d, %d\n", minY, centerY, maxY);
   M5.Lcd.printf("   %d - %d\n", rangeMin, rangeMax);
 }
+#endif /* USE_AccJoystick */
 
 /*
  * I2C Joystick
@@ -215,6 +217,7 @@ void I2CJoystick::Print() const
   M5.Lcd.printf("   %d - %d\n", rangeMin, rangeMax);
 }
 
+#ifdef USE_AnalogJoystick
 /*
  * Analog Joystick
  */
@@ -242,5 +245,6 @@ void AnalogJoystick::Print() const
   M5.Lcd.printf("y: %d, %d, %d\n", minY, centerY, maxY);
   M5.Lcd.printf("   %d - %d\n", rangeMin, rangeMax);
 }
+#endif /* USE_AnalogJoystick */
 
 #endif /* REAL_M5STACK */

@@ -2,15 +2,15 @@
 M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linapple.sourceforge.net/ )を移植して作られています。
 
 ## 遊ぶために必要なもの
-* M5Stack FIRE (https://docs.m5stack.com/#/en/core/fire)
+* M5Stack CORE2 (https://shop.m5stack.com/products/m5stack-core2-esp32-iot-development-kit)
 * マイクロSDカード (16GB推奨。32GB以上は読み込めない場合があるようです)
 * Apple ][のディスクイメージ
-* (推奨) M5Stack_LovyanLauncher (https://github.com/lovyan03/M5Stack_LovyanLauncher) (ビルドしないで遊ぶなら必須です)
-* (オプション) Grove Thumb Joystick (Analog Joystick)
-* (オプション) M5Stack Official CardKB Mini Keyboard. (キーボード系のゲームでは必須です）
+* (強く推奨) M5Stack Official CardKB Mini Keyboard. (キーボード系のゲームでは必須です）
+* (推奨) M5Stack I2C Joystick Unit.
 
 ## 遊ぶための準備
-* M5Apple2をビルドしてM5Stackにファームウェアを転送するか、M5StackにLovyanLauncherをインストールして、このパッケージ内の "bin" フォルダ以下にあるプログラムをコピーします。
+* M5Apple2 のファームウェアをビルドするか、あるいはダウンロードします。
+* M5Apple2 のファームウェアを M5Stack に転送します。
 * Apple ][のディスクイメージを、マイクロSDカードの "/m5apple2" フォルダにコピーします。
 * マイクロSDカードをM5Stackに挿入します。
 
@@ -21,14 +21,16 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 1. "Reset"を選んでエミュレータを起動します。
 
 ## キーボード
-* らびやん氏のオンスクリーンキーボードに対応しています。
 * M5Stack公式CardKBミニキーボードに対応しています。
+
+オンスクリーンキーボードには対応していません。
 
 ## ジョイスティック
 * Fireに搭載されている加速度センサを使った、ジョイスティックエミュレーションに対応しています。
-* Groveの(アナログ)ジョイスティックに対応しています。
 * M5Stack 公式のI2Cジョイスティックに対応しています。
 * ジョイスティックのボタン(A,B)は、M5StackのAボタンとCボタンを使います。
+
+Groveの(アナログ)ジョイスティックには対応していません。
 
 ### 加速度センサジョイスティックの選択とキャリブレーション
 1. M5Stackの液晶面を上にして水平なところに置いてください。
@@ -36,13 +38,6 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 1. "Select Joystick: Accelerometer" を選びます。 (M5Stackを動かさないように)
 1. "Calibrate Joystick" を選びます。 (M5Stackを動かさないように)
 1. ダイアログボックスが消えるまで少し待ちます。
-
-### アナログジョイスティックの選択とキャリブレーション
-1. M5Stackの液晶面を上にして水平なところに置いてください。
-1. Bボタンを押してメニューを表示させます。
-1. "Select Joystick: Analog" を選びます。
-1. "Calibrate Joystick" を選びます。
-1. "Move stick vertically and holizontally."というメッセージがでたら、スティックを上下左右に何度か動かしてください。
 
 ### I2Cジョイスティックの選択とキャリブレーション
 1. M5Stackの液晶面を上にして水平なところに置いてください。
@@ -55,11 +50,13 @@ M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linap
 GNU GENERAL PUBLIC LICENSE Version 3
 
 # サポート
-* SD-Updaterに対応しているので、Aボタンを押しながらM5Stackを起動するとSD-Updaterに戻ります。
 * ファイル保存に対応しました。SDカード上のファイルを書き換えるので気をつけてください。
+
 
 # 未サポート
 * サウンド
 * シリアル通信
 * プリンタ
-
+* アナログジョイスティック
+* ソフトウェアキーボード
+* SD-Updater

@@ -1,36 +1,30 @@
 #ifdef REAL_M5STACK
-#include <M5Stack.h>
-#include <M5StackUpdater.h>
-#include <SD.h>
+#include <M5Core2.h>
 
 extern int _main(int argc, char * lpCmdLine[]);
+extern void CheckI2CKeyboard();
+
 bool bSuppressMessage = false;
 bool bDebugMode = false;
 #define CARDKB_ADDR 0x5F
 const int cs = 4;
-const int PortB_pinA = 26;
-const int PortB_pinB = 36;
 
 void setup()
 {
   delay(500);
-  M5.begin(true, false, false);
+  M5.begin(true, true, false);
   M5.Lcd.setCursor(0, 0);
-  if (digitalRead(BUTTON_A_PIN) == 0) {
-    M5.Lcd.println("Will Load menu binary");
-    updateFromFS(SD);
-    ESP.restart();
-  }
   M5.Lcd.println("Initializing ...");
   Wire.begin();
   Wire.setClock(400000UL);  // Set I2C frequency to 400kHz
   pinMode(5, INPUT);
   digitalWrite(5, HIGH);
-  SD.begin(cs, SPI, 40000000, "/sd");
   // for Analog Joystick
   dacWrite(25, 0);
-  pinMode(PortB_pinA, INPUT);
-  pinMode(PortB_pinB, INPUT);
+#ifdef USE_I2CKeyboard
+  // check for I2CKeyboard
+  CheckI2CKeyboard();
+#endif /* USE_I2CKeyboard */
   M5.Lcd.println("Starting m5apple...");
   _main(1,NULL);
 }
@@ -361,9 +355,7 @@ extern void JoySetButton (eBUTTON number, eBUTTONSTATE down);
 
 void PushButtonEvents()
 {
-  M5.BtnA.read();
-  M5.BtnB.read();
-  M5.BtnC.read();
+  M5.update();
   JoySetButton(BUTTON0, (eBUTTONSTATE) M5.BtnA.isPressed());
   JoySetButton(BUTTON1, (eBUTTONSTATE) M5.BtnC.isPressed());
   if (M5.BtnA.wasPressed()) {
@@ -395,8 +387,20 @@ void PushButtonEvents()
   }
 }
 
+#ifdef USE_I2CKeyboard
+static bool I2CKeyboardAvailable = false;
+
+void CheckI2CKeyboard()
+{
+  Wire.beginTransmission(CARDKB_ADDR);
+  I2CKeyboardAvailable = Wire.endTransmission() == 0;
+}
+
 void PushI2CKeyboardEvents()
 {
+  if (!I2CKeyboardAvailable) {
+    return;
+  }
   Wire.requestFrom(CARDKB_ADDR, 1);
   while (Wire.available()) {
     int c = Wire.read();
@@ -408,9 +412,14 @@ void PushI2CKeyboardEvents()
       e.type = SDL_KEYDOWN;
       e.key.keysym.sym = c;
       SDL_PushEvent(&e);
+      e.type = SDL_KEYUP;
+      SDL_PushEvent(&e);
+      e.type = SDL_DUMMY;
+      SDL_PushEvent(&e);
     }
   }
 }
+#endif /* USE_I2CKeyboard */
 
 int SDL_PollEvent(SDL_Event *p1)
 {
@@ -431,30 +440,6 @@ int SDL_PollEvent(SDL_Event *p1)
   return p1->type == SDL_DUMMY ? 0 : 1;
 }
 
-#include <M5OnScreenKeyboard.h>
-
-M5OnScreenKeyboard m5osk;
-
-void DoOnScreenKeyboard()
-{
-  m5osk.setup();
-  while (m5osk.loop()) {
-    delay(1);
-  }
-  String text = m5osk.getString();
-  for (int i = 0; i < text.length(); i ++) {
-    SDL_Event e;
-    e.type = SDL_KEYDOWN;
-    e.key.keysym.sym = text.charAt(i);
-    SDL_PushEvent(&e);
-    e.type = SDL_KEYUP;
-    SDL_PushEvent(&e);
-    e.type = SDL_DUMMY;
-    SDL_PushEvent(&e);
-  }
-  m5osk.close();
-}
-
 #define BUFF_SIZE 64
 #define SCANLINE_SIZE 2048
 
@@ -462,16 +447,16 @@ static uint16_t scanline[SCANLINE_SIZE];
 
 void PushScanline(int offset, int size)
 {
-        uint16_t nb = size / BUFF_SIZE;
-        uint16_t *ptr = &scanline[offset];
-        for (int i = 0; i < nb; i++) {
-                M5.Lcd.pushColors(ptr, BUFF_SIZE);
-                ptr += BUFF_SIZE;
-        }
-        uint16_t np = size % BUFF_SIZE;
-        if (np) {
-                M5.Lcd.pushColors(ptr, np);
-        }
+  uint16_t nb = size / BUFF_SIZE;
+  uint16_t *ptr = &scanline[offset];
+  for (int i = 0; i < nb; i++) {
+          M5.Lcd.pushColors(ptr, BUFF_SIZE);
+          ptr += BUFF_SIZE;
+  }
+  uint16_t np = size % BUFF_SIZE;
+  if (np) {
+          M5.Lcd.pushColors(ptr, np);
+  }
 }
 
 extern SDL_Color  framebufferinfo[256];
@@ -573,9 +558,19 @@ void SDL_UpdateRect(SDL_Surface *surface, int x0, int y0, int w, int h)
 
 SDL_Joystick joystick1;
 enum M5Joystick g_Joystick = Joystick_None;
+
+#ifdef USE_AnalogJoystick
+const int Joystick_pinA = 26;
+const int Joystick_pinB = 36;
 AnalogJoystick analogJoystick(3);
+#endif /* USE_AnalogJoystick */
+#ifdef USE_AccJoystick
 AccJoystick accJoystick(3);
+#endif /* USE_AccJoystick */
+#ifdef USE_I2CJoystick
 I2CJoystick i2cJoystick(1);
+#endif /* USE_I2CJoystick */
+
 char vhKeys[] = "IJKL";
 
 #define VHKEYS_UP ((int) vhKeys[0])
@@ -592,13 +587,23 @@ int SDL_NumJoysticks(void)
 SDL_Joystick *SDL_JoystickOpen(int p1)
 {
   info("SDL_JoystickOpen");
+#ifdef USE_AnalogJoystick
   if (g_Joystick == Joystick_Analog) {
-    analogJoystick.Setup(PortB_pinA, PortB_pinB);
-  } else if (g_Joystick == Joystick_Acc) {
-    accJoystick.Setup(Wire);
-  } else if (g_Joystick == Joystick_I2C) {
+    pinMode(Joystick_pinA, INPUT);
+    pinMode(Joystick_pinB, INPUT);
+    analogJoystick.Setup(Joystick_pinA, Joystick_pinB);
+  }
+#endif /* USE_AnalogJoystick */
+#ifdef USE_AccJoystick
+  if (g_Joystick == Joystick_Acc) {
+    accJoystick.Setup(Wire1);
+  }
+#endif /* USE_AccJoystick */
+#ifdef USE_I2CJoystick
+  if (g_Joystick == Joystick_I2C) {
     i2cJoystick.Setup(Wire);
   }
+#endif /* USE_I2CJoystick */
   return &joystick1;
 }
 
@@ -616,10 +621,8 @@ int SDL_JoystickGetButton(SDL_Joystick *p1, int button)
 {
   int v = 0;
   if (button == 0) {
-    M5.BtnB.read();
-    v = M5.BtnB.isPressed();
+    v = M5.BtnA.isPressed();
   } else if (button == 1) {
-    M5.BtnC.read();
     v = M5.BtnC.isPressed();
   }
   return 0;
@@ -649,16 +652,24 @@ static void updateKeyStateFromJoystick(int axis, int v)
 int SDL_JoystickGetAxis(SDL_Joystick *joystick, int axis)
 {
   int v = 0;
+#ifdef USE_AnalogJoystick
   if (g_Joystick == Joystick_Analog) {
     analogJoystick.Update();
     v = axis == 0 ? analogJoystick.GetX() : analogJoystick.GetY();
-  } else if (g_Joystick == Joystick_Acc) {
+  }
+#endif /* USE_AnalogJoystick */
+#ifdef USE_AccJoystick
+  if (g_Joystick == Joystick_Acc) {
     accJoystick.Update();
     v = axis == 0 ? accJoystick.GetX() : accJoystick.GetY();
-  } else if (g_Joystick == Joystick_I2C) {
+  }
+#endif /* USE_AccJoystick */
+#ifdef USE_I2CJoystick
+  if (g_Joystick == Joystick_I2C) {
     i2cJoystick.Update();
     v = axis == 0 ? i2cJoystick.GetX() : i2cJoystick.GetY();
   }
+#endif /* USE_I2CJoystick */
   updateKeyStateFromJoystick(axis, v);
   return v;
 }
@@ -666,22 +677,30 @@ int SDL_JoystickGetAxis(SDL_Joystick *joystick, int axis)
 void DoCalibrateJoystick(int sx, int sy)
 {
   M5.Lcd.setCursor(sx, sy);
+#ifdef USE_AnalogJoystick
   if (g_Joystick == Joystick_Analog) {
     M5.Lcd.println("Calibrating Analog Joystick...");
     analogJoystick.CalibrateCenter(500);
     M5.Lcd.setCursor(sx, sy += 10);
     M5.Lcd.println("Move stick vertically and holizontally.");
     analogJoystick.CalibrateMinMax(5000);
-  } else if (g_Joystick == Joystick_Acc) {
+  }
+#endif /* USE_AnalogJoystick */
+#ifdef USE_AccJoystick
+  if (g_Joystick == Joystick_Acc) {
     M5.Lcd.println("Calibrating Accelerometer...");
     accJoystick.CalibrateCenter(500);
-  } else if (g_Joystick == Joystick_I2C) {
+  }
+#endif /* USE_AccJoystick */
+#ifdef USE_I2CJoystick
+  if (g_Joystick == Joystick_I2C) {
     M5.Lcd.println("Calibrating I2C Joystick...");
     i2cJoystick.CalibrateCenter(500);
     M5.Lcd.setCursor(sx, sy += 10);
     M5.Lcd.println("Move stick vertically and holizontally.");
     i2cJoystick.CalibrateMinMax(5000);
   }
+#endif /* USE_I2CJoystick */
   M5.Lcd.setCursor(sx, sy+10);
   M5.Lcd.println("Done.");
   delay(1000);

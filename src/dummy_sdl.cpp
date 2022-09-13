@@ -583,11 +583,6 @@ double DSUploadBuffer(short* buffer, unsigned len)
 
 bool g_bDSAvailable = false;
 
-void DoOnScreenKeyboard()
-{
-  info("DoOnScreenKeyboard");
-}
-
 void DoCalibrateJoystick(int sx, int sy)
 {
 }

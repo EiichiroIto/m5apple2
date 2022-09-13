@@ -26,6 +26,7 @@ class Joystick {
     virtual void Print() const = 0;
 };
 
+#ifdef USE_AccJoystick
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
@@ -43,7 +44,9 @@ class AccJoystick : public Joystick {
     void CalibrateCenter(int msec);
     void Print() const;
 };
+#endif /* USE_AccJoystick */
 
+#ifdef USE_I2CJoystick
 #define JOY_ADDR 0x52
 
 class I2CJoystick : public Joystick {
@@ -56,7 +59,9 @@ class I2CJoystick : public Joystick {
     void Setup(TwoWire &w);
     void Print() const;
 };
+#endif /* USE_I2CJoystick */
 
+#ifdef USE_AccJoystick
 class AnalogJoystick : public Joystick {
   private:
     int pinA, pinB;
@@ -67,5 +72,4 @@ class AnalogJoystick : public Joystick {
     void Setup(int a, int b);
     void Print() const;
 };
-
-
+#endif /* USE_AccJoystick */
