@@ -3,6 +3,8 @@ M5Apple2 is an Apple ][ emulator for M5Stack microcontroller, based on LinApple 
 
 [日本語](https://github.com/EiichiroIto/m5apple2/blob/master/README.ja.md)
 
+[画面例](https://raw.githubusercontent.com/EiichiroIto/m5apple2/master/bin/jpg/M5Apple2.jpg)
+
 ## Prerequisites for Play
 * M5Stack CORE2 (https://shop.m5stack.com/products/m5stack-core2-esp32-iot-development-kit)
 * Micro SD Card (TF Card)
