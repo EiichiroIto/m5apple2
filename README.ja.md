@@ -1,6 +1,8 @@
 # M5Apple2
 M5Apple2はM5Stack用のApple ][エミュレータです。LinApple(http://linapple.sourceforge.net/ )を移植して作られています。
 
+![Screen](https://raw.githubusercontent.com/EiichiroIto/m5apple2/master/bin/jpg/M5Apple2.jpg)
+
 ## 遊ぶために必要なもの
 * M5Stack CORE2 (https://shop.m5stack.com/products/m5stack-core2-esp32-iot-development-kit)
 * マイクロSDカード (16GB推奨。32GB以上は読み込めない場合があるようです)
